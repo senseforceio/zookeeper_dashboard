@@ -1,6 +1,7 @@
 FROM gliderlabs/alpine:3.3
 
-ADD package/zookeeper-dashboard /pkg
+ADD zookeeper_dashboard /pkg/zookeeper_dashboard
+ADD requirements.txt /pkg
 
 WORKDIR /pkg
 
