@@ -1,8 +1,17 @@
-FROM python:2.7
-MAINTAINER Alex Etling <alex@gc.io>
+FROM gliderlabs/alpine:3.3
 
-ADD . /zookeeper_dashboard
+ADD package/zookeeper-dashboard /pkg
 
-RUN pip install -r /zookeeper_dashboard/requirements.txt
+WORKDIR /pkg
 
-CMD cd /zookeeper_dashboard; gunicorn -b '0.0.0.0:80' -w 4 zookeeper_dashboard.wsgi:application
+RUN apk --no-cache add python py-pip && \
+    pip install -r requirements.txt && \
+    rm -rf requirements.txt && \
+    rm -rf zookeeper_dashboard/settings.py && \
+    ln -s /config/settings.py zookeeper_dashboard/settings.py
+
+VOLUME ["/config"]
+EXPOSE 8000
+
+CMD ["/usr/bin/gunicorn", "-b", "0.0.0.0:8000", "-w", "4", "zookeeper_dashboard.wsgi:application"]
+
